@@ -16,7 +16,13 @@ import {
   ArrowRightLeft,
   Activity,
   BarChart3,
-  Scale
+  Scale,
+  Heart,
+  X,
+  CreditCard,
+  ExternalLink,
+  Smartphone,
+  Globe
 } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
@@ -26,9 +32,24 @@ const App: React.FC = () => {
     return saved ? JSON.parse(saved) : INITIAL_STATE;
   });
 
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [showAccount, setShowAccount] = useState(false);
+
   useEffect(() => {
     localStorage.setItem('calc3d_state_final', JSON.stringify(state));
   }, [state]);
+
+  useEffect(() => {
+    const hasSeenWelcome = localStorage.getItem('calc3d_welcome_seen');
+    if (!hasSeenWelcome) {
+      setShowWelcome(true);
+    }
+  }, []);
+
+  const closeWelcome = () => {
+    localStorage.setItem('calc3d_welcome_seen', 'true');
+    setShowWelcome(false);
+  };
 
   const results = useMemo(() => calculateEverything(state), [state]);
 
@@ -74,6 +95,114 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0F172A] pb-20 selection:bg-[#2563EB] selection:text-white">
+      {/* Modal de Bienvenida */}
+      {showWelcome && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 overflow-hidden">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-xl transition-all duration-500"></div>
+          
+          <div className="relative bg-[#1E293B] border border-white/10 w-full max-w-lg rounded-[2.5rem] p-8 md:p-10 shadow-2xl animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            {!showAccount ? (
+              <div className="text-center">
+                <div className="bg-[#2563EB] w-16 h-16 md:w-20 md:h-20 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-xl shadow-blue-500/20">
+                   <Heart className="text-white fill-white" size={40} />
+                </div>
+                <h2 className="text-2xl font-black text-white mb-6 uppercase tracking-tighter italic">
+                  Proyecto <span className="text-[#22C55E]">Comunidad Maker</span>
+                </h2>
+                <div className="space-y-4 text-slate-300 text-sm leading-relaxed mb-10 font-medium">
+                  <p>Este proyecto nació con una idea simple: hacer que la impresión 3D en Colombia sea más clara, justa y accesible para todos.</p>
+                  <p>La calculadora es completamente gratuita y seguirá siéndolo. Si te ha ayudado en tu trabajo o emprendimiento, puedes apoyar su crecimiento con una donación voluntaria.</p>
+                  <p className="font-bold text-white italic">Cada aporte ayuda a mantener esta herramienta viva para toda la comunidad maker.</p>
+                </div>
+                
+                <div className="flex flex-col gap-3">
+                  <button 
+                    onClick={() => setShowAccount(true)}
+                    className="w-full bg-[#22C55E] hover:bg-[#1DA851] text-[#0F172A] font-black py-4 rounded-2xl transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2 shadow-lg shadow-green-500/20"
+                  >
+                    <CreditCard size={18} /> Ver canales de apoyo
+                  </button>
+                  <button 
+                    onClick={closeWelcome}
+                    className="w-full bg-transparent border border-white/10 hover:bg-white/5 text-slate-400 font-bold py-4 rounded-2xl transition-all uppercase tracking-widest text-xs"
+                  >
+                    Cerrar y no volver a mostrar
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center animate-in slide-in-from-right-10 duration-300">
+                <button 
+                  onClick={() => setShowAccount(false)}
+                  className="absolute top-6 right-6 text-slate-500 hover:text-white transition-all"
+                >
+                  <X size={24} />
+                </button>
+                <div className="bg-[#22C55E]/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                   <Heart className="text-[#22C55E]" size={32} />
+                </div>
+                <h3 className="text-xl font-black text-white mb-6 uppercase tracking-widest italic">Medios de Apoyo</h3>
+                
+                <div className="space-y-4 text-left">
+                  {/* Nequi & Daviplata */}
+                  <div className="bg-[#0F172A] border border-white/5 p-5 rounded-2xl relative overflow-hidden group">
+                    <div className="relative z-10">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Smartphone size={16} className="text-[#22C55E]" />
+                        <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Nequi / Daviplata</p>
+                      </div>
+                      <p className="text-2xl font-black text-[#22C55E] tracking-[0.1em]">316 522 3695</p>
+                    </div>
+                  </div>
+
+                  {/* Bancolombia - Bre-B */}
+                  <div className="bg-[#0F172A] border border-white/5 p-5 rounded-2xl relative overflow-hidden group">
+                    <div className="relative z-10">
+                      <div className="flex items-center gap-2 mb-2">
+                        <CreditCard size={16} className="text-[#2563EB]" />
+                        <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Bancolombia (Llave Bre-B)</p>
+                      </div>
+                      <p className="text-2xl font-black text-white tracking-[0.1em]">009 166 1951</p>
+                      <p className="text-[9px] text-blue-400 font-bold uppercase mt-2">Usa este número como llave para transferencias</p>
+                    </div>
+                  </div>
+
+                  {/* Mercado Pago - Internacional */}
+                  <div className="bg-[#0F172A] border border-white/5 p-5 rounded-2xl relative overflow-hidden group">
+                    <div className="relative z-10">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Globe size={16} className="text-[#00B1EA]" />
+                        <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Apoyo Internacional / Otros</p>
+                      </div>
+                      <p className="text-[10px] text-slate-400 mb-2">Link de Mercado Pago para extranjeros:</p>
+                      <a 
+                        href="https://link.mercadopago.com.co/calculadora3dpro" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-xs font-black text-blue-400 hover:text-blue-300 underline break-all flex items-center gap-1"
+                      >
+                        link.mercadopago.com.co/calculadora3dpro <ExternalLink size={12} />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-[11px] text-slate-500 italic my-8 leading-relaxed px-4">
+                  Tu apoyo nos permite seguir innovando y manteniendo esta herramienta gratuita para todos los emprendedores del país.
+                </p>
+
+                <button 
+                  onClick={closeWelcome}
+                  className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-black py-4 rounded-2xl transition-all uppercase tracking-widest text-xs shadow-lg shadow-blue-500/20"
+                >
+                  Entendido, ¡gracias!
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Header Tecnológico */}
       <header className="bg-[#1E293B] border-b border-white/5 sticky top-0 z-50 shadow-2xl">
         <div className="max-w-6xl mx-auto px-4 h-24 flex flex-col md:flex-row items-center justify-between gap-4 py-2 md:py-0">
