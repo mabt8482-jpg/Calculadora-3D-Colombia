@@ -1,0 +1,5 @@
+{
+  "name": "Calculadora 3D colombia",
+  "description": "Calculadora profesional de costos y ganancias para impresión 3D adaptada al mercado colombiano (COP/USD). Calcula gastos fijos, variables y rentabilidad.",
+  "requestFramePermissions": []
+}
