@@ -32,22 +32,15 @@ const App: React.FC = () => {
     return saved ? JSON.parse(saved) : INITIAL_STATE;
   });
 
-  const [showWelcome, setShowWelcome] = useState(false);
+  // El modal se inicializa en true para que aparezca siempre al cargar la página
+  const [showWelcome, setShowWelcome] = useState(true);
   const [showAccount, setShowAccount] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('calc3d_state_final', JSON.stringify(state));
   }, [state]);
 
-  useEffect(() => {
-    const hasSeenWelcome = localStorage.getItem('calc3d_welcome_seen');
-    if (!hasSeenWelcome) {
-      setShowWelcome(true);
-    }
-  }, []);
-
   const closeWelcome = () => {
-    localStorage.setItem('calc3d_welcome_seen', 'true');
     setShowWelcome(false);
   };
 
@@ -95,7 +88,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0F172A] pb-20 selection:bg-[#2563EB] selection:text-white">
-      {/* Modal de Bienvenida */}
+      {/* Modal de Bienvenida (Aparece siempre al cargar) */}
       {showWelcome && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 overflow-hidden">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-xl transition-all duration-500"></div>
@@ -126,7 +119,7 @@ const App: React.FC = () => {
                     onClick={closeWelcome}
                     className="w-full bg-transparent border border-white/10 hover:bg-white/5 text-slate-400 font-bold py-4 rounded-2xl transition-all uppercase tracking-widest text-xs"
                   >
-                    Cerrar y no volver a mostrar
+                    Continuar a la calculadora
                   </button>
                 </div>
               </div>
@@ -163,7 +156,7 @@ const App: React.FC = () => {
                         <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Bancolombia (Llave Bre-B)</p>
                       </div>
                       <p className="text-2xl font-black text-white tracking-[0.1em]">009 166 1951</p>
-                      <p className="text-[9px] text-blue-400 font-bold uppercase mt-2">Usa este número como llave para transferencias</p>
+                      <p className="text-[9px] text-blue-400 font-bold uppercase mt-2 text-center md:text-left">Usa este número como llave para transferencias Bre-B</p>
                     </div>
                   </div>
 
@@ -188,7 +181,7 @@ const App: React.FC = () => {
                 </div>
 
                 <p className="text-[11px] text-slate-500 italic my-8 leading-relaxed px-4">
-                  Tu apoyo nos permite seguir innovando y manteniendo esta herramienta gratuita para todos los emprendedores del país.
+                  ¡Gracias por creer en este proyecto y apoyar el crecimiento de la comunidad maker en Colombia!
                 </p>
 
                 <button 
@@ -260,10 +253,7 @@ const App: React.FC = () => {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 mt-12 grid grid-cols-1 lg:grid-cols-12 gap-10">
-        
-        {/* Columna de Entradas */}
         <div className="lg:col-span-7 space-y-4">
-          
           <InputSection title="Capacidad de Operación" icon={<Settings size={20} />}>
             <InputField 
               label="Horas de impresión mensuales" 
@@ -446,20 +436,15 @@ const App: React.FC = () => {
                </div>
             </div>
           </InputSection>
-
         </div>
 
-        {/* Panel de Resultados / Dashboard */}
         <div className="lg:col-span-5 lg:sticky lg:top-28 h-fit space-y-6">
           <div className="bg-[#1E293B] rounded-[2.5rem] shadow-2xl p-10 text-white border border-white/5 relative overflow-hidden ring-4 ring-[#0F172A]">
-            
-            {/* Indicador de Moneda */}
             <div className="absolute top-0 right-0 bg-[#2563EB] px-6 py-2 rounded-bl-3xl font-black text-[10px] tracking-[0.2em] uppercase shadow-lg z-10 italic">
                MODO {state.currency}
             </div>
 
             <div className="space-y-12 relative z-0">
-              {/* Bloque Precio Sugerido */}
               <div className="text-center md:text-left">
                 <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mb-4 flex items-center justify-center md:justify-start gap-2">
                    <BarChart3 size={14} className="text-[#2563EB]" /> Precio Final de Mercado
@@ -479,7 +464,6 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              {/* Grid de Datos Clave */}
               <div className="grid grid-cols-2 gap-4 pt-10 border-t border-white/5">
                 <div className="p-5 bg-[#0F172A]/80 rounded-2xl border border-white/5 hover:border-blue-500/20 transition-all">
                   <p className="text-slate-500 text-[9px] font-black uppercase tracking-widest mb-1">Costo Producción</p>
@@ -499,7 +483,6 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              {/* Gráfica Circular Optimizada */}
               <div className="pt-10 border-t border-white/5">
                 <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mb-12 text-center italic">Composición Técnica del Costo</p>
                 <div className="h-[400px] w-full flex items-center justify-center">
@@ -533,7 +516,7 @@ const App: React.FC = () => {
                         iconType="circle"
                         iconSize={10}
                         wrapperStyle={{ paddingTop: '40px' }}
-                        formatter={(value, entry: any) => (
+                        formatter={(value) => (
                           <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter mx-2 inline-block">
                             {value}
                           </span>
@@ -544,7 +527,6 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              {/* Barra de Capacidad */}
               <div className="bg-[#0F172A] rounded-3xl p-7 border border-white/5 space-y-5 shadow-inner ring-1 ring-white/5">
                  <div className="flex items-center gap-3">
                     <Activity size={20} className="text-[#2563EB]" />
@@ -561,34 +543,15 @@ const App: React.FC = () => {
                         style={{ width: `${Math.min(100, (state.monthlyPrintingHours / 720) * 100)}%` }}
                        ></div>
                     </div>
-                    <p className="text-[10px] text-slate-600 italic leading-none">Cálculo basado en ciclo industrial 24/7 (720h/mes).</p>
                  </div>
               </div>
             </div>
           </div>
-          
-          <div className="bg-[#22C55E]/5 border border-[#22C55E]/10 rounded-3xl p-8 flex items-start gap-5 shadow-2xl">
-            <div className="text-[#22C55E] p-3 bg-[#22C55E]/10 rounded-2xl shadow-lg shadow-green-500/10">
-              <Scale size={24} />
-            </div>
-            <div>
-              <p className="text-[11px] text-slate-400 font-semibold leading-relaxed">
-                <span className="text-white font-black uppercase block mb-2 tracking-widest">Nota Profesional:</span>
-                Esta herramienta utiliza <span className="text-white font-bold italic">Costeo por Absorción</span>. 
-                Los gastos fijos se distribuyen proporcionalmente. Escalar tu producción baja el costo unitario de cada gramo extruido.
-              </p>
-            </div>
-          </div>
         </div>
-
       </main>
 
       <footer className="max-w-6xl mx-auto px-4 mt-32 text-center border-t border-white/5 pt-16">
         <p className="text-[11px] font-black uppercase tracking-[0.6em] text-slate-700 mb-3 leading-none italic">3D PRODUCTION SUITE | COLOMBIA EDITION</p>
-        <p className="text-[10px] text-slate-800 font-bold italic max-w-xl mx-auto leading-relaxed">
-          Diseñado para optimización financiera en manufactura aditiva profesional.<br/>
-          Listo para desplegar en GitHub Pages.
-        </p>
       </footer>
     </div>
   );
